@@ -14,7 +14,34 @@ Production-style phishing URL classifier with a shared feature pipeline, gradien
 
 ## Architecture
 
-![Architecture diagram](docs/architecture.svg)
+```mermaid
+flowchart TB
+    subgraph train ["Training pipeline"]
+        CSV["data/urls.csv<br/><i>url, label</i>"]
+        FE["app/features.py<br/><b>extract_features()</b><br/>23 lexical + host features"]
+        TR["app/train.py<br/>XGBoost · 5-fold CV · grid search"]
+        ART[("models/phishing_model.joblib<br/>model + FeatureTransformer")]
+        ML["MLflow · ./mlruns<br/>params · metrics · artifacts"]
+        CSV --> FE --> TR --> ART
+        TR --> ML
+    end
+
+    subgraph serve ["Serving (shared artifact + features)"]
+        HTTP["HTTP client"]
+        AGENT["Claude Desktop / Cursor / Agent"]
+        API["FastAPI · app/api.py<br/>POST /predict · GET /health"]
+        MCP["MCP · app/mcp_server.py<br/>tool: score_url · stdio"]
+        MDL["app/model.py<br/>load_artifact() · predict()"]
+        PATH["extract_features(url) → vector → XGBoost predict_proba"]
+        ART --> MDL
+        HTTP --> API --> MDL
+        AGENT --> MCP --> MDL
+        MDL --> PATH
+        FE -.->|"same function"| PATH
+    end
+```
+
+> Standalone SVG (for export/slides): [docs/architecture.svg](docs/architecture.svg)
 
 ## MCP Integration
 
