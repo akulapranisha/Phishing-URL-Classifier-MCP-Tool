@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 520" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L9,3 L0,6 Z" fill="#334155"/>
+    </marker>
+    <style>
+      .title { font-size: 20px; font-weight: 700; fill: #0f172a; }
+      .label { font-size: 13px; font-weight: 600; fill: #0f172a; }
+      .sub { font-size: 11px; fill: #475569; }
+      .box { fill: #f8fafc; stroke: #334155; stroke-width: 1.5; rx: 8; }
+      .shared { fill: #ecfeff; stroke: #0891b2; stroke-width: 2; }
+      .artifact { fill: #fef3c7; stroke: #d97706; stroke-width: 2; }
+      .line { stroke: #334155; stroke-width: 1.5; fill: none; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <text x="460" y="32" text-anchor="middle" class="title">Phishing URL Classifier Architecture</text>
+
+  <!-- Training path -->
+  <rect x="40" y="60" width="180" height="70" class="box"/>
+  <text x="130" y="88" text-anchor="middle" class="label">data/urls.csv</text>
+  <text x="130" y="108" text-anchor="middle" class="sub">url, label</text>
+
+  <rect x="280" y="60" width="200" height="70" class="shared"/>
+  <text x="380" y="88" text-anchor="middle" class="label">app/features.py</text>
+  <text x="380" y="108" text-anchor="middle" class="sub">extract_features()  23 features</text>
+
+  <rect x="540" y="60" width="180" height="70" class="box"/>
+  <text x="630" y="88" text-anchor="middle" class="label">app/train.py</text>
+  <text x="630" y="108" text-anchor="middle" class="sub">XGBoost + CV + tuning</text>
+
+  <rect x="760" y="60" width="140" height="70" class="artifact"/>
+  <text x="830" y="88" text-anchor="middle" class="label">joblib artifact</text>
+  <text x="830" y="108" text-anchor="middle" class="sub">model + transformer</text>
+
+  <line x1="220" y1="95" x2="280" y2="95" class="line"/>
+  <line x1="480" y1="95" x2="540" y2="95" class="line"/>
+  <line x1="720" y1="95" x2="760" y2="95" class="line"/>
+
+  <!-- MLflow -->
+  <rect x="540" y="170" width="180" height="60" class="box"/>
+  <text x="630" y="198" text-anchor="middle" class="label">MLflow</text>
+  <text x="630" y="216" text-anchor="middle" class="sub">./mlruns (local)</text>
+  <line x1="630" y1="130" x2="630" y2="170" class="line"/>
+
+  <!-- Serving -->
+  <rect x="120" y="290" width="220" height="80" class="box"/>
+  <text x="230" y="320" text-anchor="middle" class="label">FastAPI (app/api.py)</text>
+  <text x="230" y="340" text-anchor="middle" class="sub">POST /predict � GET /health</text>
+  <text x="230" y="358" text-anchor="middle" class="sub">Uvicorn � model cached in memory</text>
+
+  <rect x="420" y="290" width="220" height="80" class="box"/>
+  <text x="530" y="320" text-anchor="middle" class="label">MCP Server (app/mcp_server.py)</text>
+  <text x="530" y="340" text-anchor="middle" class="sub">tool: score_url(url)</text>
+  <text x="530" y="358" text-anchor="middle" class="sub">stdio transport</text>
+
+  <rect x="720" y="290" width="160" height="80" class="shared"/>
+  <text x="800" y="320" text-anchor="middle" class="label">app/model.py</text>
+  <text x="800" y="340" text-anchor="middle" class="sub">load_artifact()</text>
+  <text x="800" y="358" text-anchor="middle" class="sub">predict()</text>
+
+  <line x1="830" y1="130" x2="800" y2="290" class="line"/>
+  <line x1="340" y1="330" x2="720" y2="330" class="line"/>
+  <line x1="640" y1="330" x2="720" y2="330" class="line"/>
+
+  <!-- Shared features at serve time -->
+  <rect x="280" y="410" width="360" height="70" class="shared"/>
+  <text x="460" y="440" text-anchor="middle" class="label">Shared feature path (no train/serve skew)</text>
+  <text x="460" y="460" text-anchor="middle" class="sub">extract_features(url) � vector � XGBoost predict_proba</text>
+
+  <line x1="230" y1="370" x2="360" y2="410" class="line"/>
+  <line x1="530" y1="370" x2="500" y2="410" class="line"/>
+  <line x1="800" y1="370" x2="560" y2="410" class="line"/>
+
+  <!-- External clients -->
+  <rect x="40" y="300" width="60" height="60" class="box"/>
+  <text x="70" y="335" text-anchor="middle" class="sub">HTTP</text>
+  <text x="70" y="350" text-anchor="middle" class="sub">client</text>
+  <line x1="100" y1="330" x2="120" y2="330" class="line"/>
+
+  <rect x="40" y="400" width="120" height="60" class="box"/>
+  <text x="100" y="428" text-anchor="middle" class="sub">Claude Desktop</text>
+  <text x="100" y="446" text-anchor="middle" class="sub">Cursor / Agent</text>
+  <line x1="160" y1="430" x2="280" y2="445" class="line"/>
+</svg>
