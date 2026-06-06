@@ -2,9 +2,56 @@
 
 Production-style phishing URL classifier with a shared feature pipeline, gradient-boosted model, FastAPI REST API, and MCP tool for external LLM agents.
 
+## Highlights
+
+* Built an XGBoost-based phishing URL classifier using 23 engineered lexical and host-based features.
+* Developed a FastAPI REST API for real-time URL risk scoring.
+* Exposed model inference through a FastMCP server for AI-agent integration.
+* Integrated with Cursor AI using a custom MCP tool (`score_url`).
+* Added Dockerized deployment and MLflow experiment tracking.
+* Achieved 15/15 passing automated tests across feature extraction, model inference, and API functionality.
+
+
 ## Architecture
 
 ![Architecture diagram](docs/architecture.svg)
+
+## MCP Integration
+
+This project exposes the phishing detection model as a Model Context Protocol (MCP) tool, allowing AI agents such as Cursor and Claude Desktop to perform real-time phishing URL analysis.
+
+### Available Tool
+
+**score_url(url)**
+
+Example:
+
+Input:
+https://google.com
+
+Output:
+
+```json
+{
+  "label": "benign",
+  "probability": 0.008849
+}
+```
+
+Input:
+http://paypal-security-login.verify-account.ru
+
+Output:
+
+```json
+{
+  "label": "phishing",
+  "probability": 0.993625
+}
+```
+
+The MCP server uses the same trained model artifact and feature extraction pipeline as the FastAPI REST API, eliminating train/serve skew.
+
 
 **Data flow**
 
@@ -52,8 +99,8 @@ All features are extracted by `app/features.py::extract_features()` and document
 ### Setup
 
 ```bash
-git clone <repo-url>
-cd URL
+git clone https://github.com/akulapranisha/Phishing-URL-Classifier-MCP-Tool.git
+cd Phishing-URL-Classifier-MCP-Tool
 python -m venv .venv
 # Windows: .venv\Scripts\activate
 # macOS/Linux: source .venv/bin/activate
